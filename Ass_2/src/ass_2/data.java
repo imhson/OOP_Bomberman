@@ -5,10 +5,13 @@
  */
 package ass_2;
 
+import javafx.scene.Node;
+
 /**
  *
  * @author Hoangson
  */
 public class data {
         public static char[][] dataMatrix = new char[50][50];
+        public static Node[][] dataNode = new Node[50][50];
 }

@@ -40,28 +40,30 @@ public class StaticObject {
                 for (int i=0;i<lineData.length();i++){
                     column=i;
                     data.dataMatrix[row][column] = lineData.charAt(i);
+                    {
+                        int [] point ={(int)column*object_width,(int)row*object_height};
+                        Grass grass = new Grass(point);
+                        group.getChildren().add(grass.imageView_grass);
+                    }
                     if (lineData.charAt(i)=='#'){
                         int [] point ={(int)column*object_width,(int)row*object_height};
                         Wall wall = new Wall(point);
-                        group.getChildren().add(wall.imageView_wall);
+                        data.dataNode[row][column] = wall.imageView_wall;
+                        group.getChildren().add(data.dataNode[row][column]);
                         continue;
                     }
                     if (lineData.charAt(i)=='*'){
                         int [] point ={(int)column*object_width,(int)row*object_height};
                         Brick brick = new Brick(point);
-                        group.getChildren().add(brick.imageView_brick);
+                        data.dataNode[row][column] = brick.imageView_brick;
+                        group.getChildren().add(data.dataNode[row][column]);
                         continue;
                     }
                     if (lineData.charAt(i)=='x'){
                         int [] point ={(int)column*object_width,(int)row*object_height};
                         Portal portal = new Portal(point);
-                        group.getChildren().add(portal.imageView_portal);
-                    }
-                    else{
-                        int [] point ={(int)column*object_width,(int)row*object_height};
-                        Grass grass = new Grass(point);
-                        group.getChildren().add(grass.imageView_grass);
-
+                        data.dataNode[row][column] = portal.imageView_portal;
+                        group.getChildren().add(data.dataNode[row][column]);
                     }
                 }
                 lineData = br.readLine();

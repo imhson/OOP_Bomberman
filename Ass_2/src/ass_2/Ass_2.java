@@ -5,9 +5,7 @@
  */
 package ass_2;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Handler;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -23,38 +21,44 @@ public class Ass_2 extends Application {
     public void start(Stage primaryStage) {
         final int width = 600;
         final int height = 480;
-        
+        boolean isPlaying=true;
         primaryStage.setTitle("Bomberman");
         Pane root = new Pane();
+        Scene primaryScene = new Scene(root, width, height);
+        primaryStage.setScene(primaryScene);
+        primaryStage.show();
         StaticObject staticObject = new StaticObject();
         int level = staticObject.loadFromMatrix("/data_package/matrix_1.txt", root);
         int [] pointStart_bomber = {StaticObject.object_width,StaticObject.object_height};
         Bomber bomber = new Bomber(pointStart_bomber);
-        Scene primaryScene = new Scene(root, width, height);
-        
+        int [] pointStart_enemy = {520,396};
+        Enemy enemy = new Enemy(pointStart_enemy);
+        EnemyLooper enemyLooper = new EnemyLooper(enemy);
+        enemyLooper.start();
+        root.getChildren().addAll(bomber.imageView_bomber,enemy.imageView_enemy);
         //dieu khien nhan vat
         primaryScene.setOnKeyPressed(action ->{
-            if (action.getCode()==KeyCode.W){
+            if (action.getCode()==KeyCode.UP){
                 if (bomber.check_Up((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
-                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()-bomber.SPEED);
+                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()-Bomber.SPEED);
                 }
             }
             else{
-            if (action.getCode()==KeyCode.A){
+            if (action.getCode()==KeyCode.LEFT){
                 if (bomber.check_Left((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
-                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()-bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
+                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()-Bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
                 }
             }
             else{
-            if (action.getCode()==KeyCode.S){
+            if (action.getCode()==KeyCode.DOWN){
                 if (bomber.check_Down((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
-                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()+bomber.SPEED);
+                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()+Bomber.SPEED);
                 }
             }
             else{
-            if (action.getCode()==KeyCode.D){
+            if (action.getCode()==KeyCode.RIGHT){
                 if (bomber.check_Right((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
-                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()+bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
+                    bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()+Bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
                 }
             }
             else{
@@ -63,18 +67,25 @@ public class Ass_2 extends Application {
                     int[] point_bomb={(int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY()};
                     Bomb bomb = new Bomb(point_bomb);
                     root.getChildren().add(bomb.imageView_bomb);
+                    bomb.setTime = System.currentTimeMillis();
                     data.dataMatrix[(int)bomb.imageView_bomb.getLayoutY()/StaticObject.object_height][(int)bomb.imageView_bomb.getLayoutX()/StaticObject.object_width]='b';
                     bomber.bombRemain--;
-                    
-                    Timer timer = new Timer();
-                    timer.schedule(new TimerTask(){
-                    @Override
-                    public void run(){
-                        bomb.explode(root);
-                        data.dataMatrix[(int)bomb.imageView_bomb.getLayoutY()/StaticObject.object_height][(int)bomb.imageView_bomb.getLayoutX()/StaticObject.object_width]=' ';
-                        bomber.bombRemain++;
-                    }
-                    }, bomb.delayExplosion);
+                    new AnimationTimer() {
+                        @Override
+                        public void handle(long now) {
+                            if (System.currentTimeMillis()-bomb.setTime>bomb.delayExplosion&&bomb.delayExplosion>0&&!bomb.isExplode){
+                                bomb.explode(root);
+                                data.dataMatrix[(int)bomb.imageView_bomb.getLayoutY()/StaticObject.object_height][(int)bomb.imageView_bomb.getLayoutX()/StaticObject.object_width]=' ';
+                                bomber.bombRemain++;
+                                bomb.isExplode=true;
+                                }
+                            
+                            if (System.currentTimeMillis()-bomb.setTime>bomb.delayExplosion+500&&!bomb.isEnd){
+                                    bomb.setEnd(root);
+                                    bomb.isEnd=true;
+                            }
+                        }
+                    }.start();
                 }
             }
             }
@@ -82,12 +93,7 @@ public class Ass_2 extends Application {
             }
             }
         });
-        
-        root.getChildren().add(bomber.imageView_bomber);
-
-        primaryStage.setScene(primaryScene);
-        primaryStage.show();
-    }
+}
 
     /**
      * @param args the command line arguments
