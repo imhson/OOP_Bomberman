@@ -61,9 +61,33 @@ public class StaticObject {
                     }
                     if (lineData.charAt(i)=='x'){
                         int [] point ={(int)column*object_width,(int)row*object_height};
+                        Brick brick = new Brick(point);
+                        data.dataNode[row][column] = brick.imageView_brick;
                         Portal portal = new Portal(point);
-                        data.dataNode[row][column] = portal.imageView_portal;
+                        data.dataMatrix[row][column] = '*';
+                        Portal.point = point;
+                        group.getChildren().addAll(portal.imageView_portal, data.dataNode[row][column]);
+                    }
+                    if (lineData.charAt(i)=='s'){
+                        int [] point ={(int)column*object_width,(int)row*object_height};
+                        SpeedItem speedItem = new SpeedItem(point);
+                        data.dataNode[row][column] = speedItem.imageView_SpeedItem;
                         group.getChildren().add(data.dataNode[row][column]);
+                        continue;
+                    }
+                    if (lineData.charAt(i)=='f'){
+                        int [] point ={(int)column*object_width,(int)row*object_height};
+                        FlameItem flameItem = new FlameItem(point);
+                        data.dataNode[row][column] = flameItem.imageView_FlameItem;
+                        group.getChildren().add(data.dataNode[row][column]);
+                        continue;
+                    }
+                    if (lineData.charAt(i)=='o'){
+                        int [] point ={(int)column*object_width,(int)row*object_height};
+                        BombItem bombItem = new BombItem(point);
+                        data.dataNode[row][column] = bombItem.imageView_bombItem;
+                        group.getChildren().add(data.dataNode[row][column]);
+                        continue;
                     }
                 }
                 lineData = br.readLine();

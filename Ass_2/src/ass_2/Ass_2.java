@@ -17,11 +17,11 @@ import javafx.stage.Stage;
  * @author Hoangson
  */
 public class Ass_2 extends Application {
+    static boolean gameOver = false;
     @Override
     public void start(Stage primaryStage) {
         final int width = 600;
         final int height = 480;
-        boolean isPlaying=true;
         primaryStage.setTitle("Bomberman");
         Pane root = new Pane();
         Scene primaryScene = new Scene(root, width, height);
@@ -29,36 +29,49 @@ public class Ass_2 extends Application {
         primaryStage.show();
         StaticObject staticObject = new StaticObject();
         int level = staticObject.loadFromMatrix("/data_package/matrix_1.txt", root);
+        
         int [] pointStart_bomber = {StaticObject.object_width,StaticObject.object_height};
         Bomber bomber = new Bomber(pointStart_bomber);
-        int [] pointStart_enemy = {520,396};
-        Enemy enemy = new Enemy(pointStart_enemy);
-        EnemyLooper enemyLooper = new EnemyLooper(enemy);
-        enemyLooper.start();
-        root.getChildren().addAll(bomber.imageView_bomber,enemy.imageView_enemy);
+        
+        int [] pointStart_enemyBalloom = {520,396};
+        int [] pointStart_enemyOneal = {520,36};
+        
+        Balloom balloom = new Balloom(pointStart_enemyBalloom);
+        Oneal oneal = new Oneal(pointStart_enemyOneal);
+        
+        EnemyLooper enemyBalloomLooper = new EnemyLooper(balloom);
+        EnemyLooper enemyOnealLooper = new EnemyLooper(oneal);
+        
+        enemyOnealLooper.start();
+        enemyBalloomLooper.start();
+        root.getChildren().addAll(bomber.imageView_bomber,balloom.imageView_enemy,oneal.imageView_enemy);
         //dieu khien nhan vat
         primaryScene.setOnKeyPressed(action ->{
             if (action.getCode()==KeyCode.UP){
                 if (bomber.check_Up((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()-Bomber.SPEED);
+                    bomber.checkItem(bomber);
                 }
             }
             else{
             if (action.getCode()==KeyCode.LEFT){
                 if (bomber.check_Left((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()-Bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
+                    bomber.checkItem(bomber);
                 }
             }
             else{
             if (action.getCode()==KeyCode.DOWN){
                 if (bomber.check_Down((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()+Bomber.SPEED);
+                    bomber.checkItem(bomber);
                 }
             }
             else{
             if (action.getCode()==KeyCode.RIGHT){
                 if (bomber.check_Right((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()+Bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
+                    bomber.checkItem(bomber);
                 }
             }
             else{
@@ -74,7 +87,7 @@ public class Ass_2 extends Application {
                         @Override
                         public void handle(long now) {
                             if (System.currentTimeMillis()-bomb.setTime>bomb.delayExplosion&&bomb.delayExplosion>0&&!bomb.isExplode){
-                                bomb.explode(root);
+                                bomb.explode(root,balloom,oneal,bomber);
                                 data.dataMatrix[(int)bomb.imageView_bomb.getLayoutY()/StaticObject.object_height][(int)bomb.imageView_bomb.getLayoutX()/StaticObject.object_width]=' ';
                                 bomber.bombRemain++;
                                 bomb.isExplode=true;
@@ -93,6 +106,30 @@ public class Ass_2 extends Application {
             }
             }
         });
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (!gameOver)
+                    gameOver = checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) balloom.imageView_enemy.getLayoutX(), (int) balloom.imageView_enemy.getLayoutY())&&checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) oneal.imageView_enemy.getLayoutX(), (int) oneal.imageView_enemy.getLayoutY());
+                if (balloom.isDestroyed){
+                    enemyBalloomLooper.stop();
+                    balloom.imageView_enemy.setVisible(false);
+                }
+                if (oneal.isDestroyed){
+                    enemyOnealLooper.stop();
+                    oneal.imageView_enemy.setVisible(false);
+                }
+                if (gameOver){
+                    primaryStage.close();
+                }
+                if (balloom.isDestroyed&&oneal.isDestroyed){
+                    if (checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) balloom.imageView_enemy.getLayoutX(), (int) balloom.imageView_enemy.getLayoutY())){
+                        System.out.println("win");
+                        
+                    }
+                }
+            }
+        }.start();
 }
 
     /**

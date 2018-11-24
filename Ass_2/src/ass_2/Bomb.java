@@ -49,13 +49,20 @@ public class Bomb extends StaticObject{
     public Bomb() {
     }
     
-    public void explode(Pane root){
+    public void explode(Pane root, Balloom balloom, Oneal oneal, Bomber bomber){
         arrNode= flame.printFlame();
         for (int i=0;i<arrNode.size();i++){
             root.getChildren().add(arrNode.get(i));
             if (data.dataMatrix[(int)arrNode.get(i).getLayoutY()/StaticObject.object_height][(int)arrNode.get(i).getLayoutX()/StaticObject.object_width]=='*'){
                 data.dataMatrix[(int)arrNode.get(i).getLayoutY()/StaticObject.object_height][(int)arrNode.get(i).getLayoutX()/StaticObject.object_width]=' ';
                 data.dataNode[(int)arrNode.get(i).getLayoutY()/StaticObject.object_height][(int)arrNode.get(i).getLayoutX()/StaticObject.object_width].setVisible(false);
+            }
+            if (!balloom.isDestroyed)
+                balloom.isDestroyed = checkContact.checkContact((int)arrNode.get(i).getLayoutX(), (int)arrNode.get(i).getLayoutY(), (int) balloom.imageView_enemy.getLayoutX(), (int) balloom.imageView_enemy.getLayoutY());
+            if (!oneal.isDestroyed)
+                oneal.isDestroyed = checkContact.checkContact((int)arrNode.get(i).getLayoutX(), (int)arrNode.get(i).getLayoutY(), (int) oneal.imageView_enemy.getLayoutX(), (int) oneal.imageView_enemy.getLayoutY());
+            if (!Ass_2.gameOver){
+                Ass_2.gameOver = checkContact.checkContact((int)arrNode.get(i).getLayoutX(), (int)arrNode.get(i).getLayoutY(), (int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY());
             }
         }
         root.getChildren().remove(this.imageView_bomb);

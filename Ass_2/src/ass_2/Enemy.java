@@ -5,12 +5,8 @@
  */
 package ass_2;
 
-import javafx.animation.PathTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.*;
-import javafx.animation.Transition.*;
-import javafx.util.Duration;
 
 /**
  *
@@ -18,7 +14,7 @@ import javafx.util.Duration;
  */
 public class Enemy extends DynamicObject{
     ImageView imageView_enemy = new ImageView(new Image(getClass().getResourceAsStream("/image_package/enemy.png")));
-    public static int enemy_SPEED = 4;
+    public int enemy_SPEED;
     boolean isDestroyed=false;
     public Enemy(int[] point) {
         super(point);

@@ -13,9 +13,9 @@ import javafx.scene.image.ImageView;
  * @author Hoangson
  */
 public class Bomber extends DynamicObject{
-    public static int bombRemain=3;
+    public static int bombRemain=1;
     ImageView imageView_bomber = new ImageView(new Image(getClass().getResourceAsStream("/image_package/bomber.png")));
-    public static int SPEED = 4;
+    public static int SPEED = 1;
 
     public Bomber(int[] point) {
         super(point);
@@ -27,8 +27,28 @@ public class Bomber extends DynamicObject{
         imageView_bomber.setLayoutX(x);
         imageView_bomber.setLayoutY(y);        
     }
-    
-    public void changeSpeed(String change){
+    public void checkItem (Bomber bomber){
+        int locationColumn = (int) (bomber.imageView_bomber.getLayoutX())/StaticObject.object_width;
+        int locationRow = (int) (bomber.imageView_bomber.getLayoutY())/StaticObject.object_height;
+        char item = data.dataMatrix[locationRow][locationColumn];
+        if (item=='s'){
+            Bomber.changeSpeed("INCREASE");
+            data.dataNode[locationRow][locationColumn].setVisible(false);
+            data.dataMatrix[locationRow][locationColumn]=' ';
+        }
+        if (item=='f'){
+            Bomb.power++;
+            data.dataNode[locationRow][locationColumn].setVisible(false);
+            data.dataMatrix[locationRow][locationColumn]=' ';
+        }
+        if (item=='o'){
+            Bomber.bombRemain++;
+            data.dataNode[locationRow][locationColumn].setVisible(false);
+            data.dataMatrix[locationRow][locationColumn]=' ';
+        }
+    }
+
+    public static void changeSpeed(String change){
         if (change.equals("INCREASE")){
             if (SPEED==1)
                 SPEED=2;

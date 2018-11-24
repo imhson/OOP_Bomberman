@@ -120,35 +120,6 @@ public class Flame {
         }
         return arrayNode;
     }
-    public void setVisible(boolean visible){
-        imageView_flameCenter.setVisible(visible);
-        for (int i=0;i<=3;i++){
-            for (int j=0;j<=3;j++){
-                if (imageView_flameBody[i][j]!=null){
-                    imageView_flameBody[i][j].setVisible(visible);
-                    if(!visible){
-                        int row = (int)imageView_flameBody[i][j].getLayoutY()/StaticObject.object_height;
-                        int col = (int)imageView_flameBody[i][j].getLayoutX()/StaticObject.object_width;
-                        if (data.dataMatrix[row][col]=='*'){
-                            data.dataNode[row][col].setVisible(false);
-                            data.dataMatrix[row][col]=' ';
-                        }
-                    }
-                }
-            }
-            if (imageView_flameEnding[i]!=null){
-                imageView_flameEnding[i].setVisible(visible);
-                    if(!visible){
-                        int row = (int)imageView_flameEnding[i].getLayoutY()/StaticObject.object_height;
-                        int col = (int)imageView_flameEnding[i].getLayoutX()/StaticObject.object_width;
-                        if (data.dataMatrix[row][col]=='*'){
-                            data.dataNode[row][col].setVisible(false);
-                            data.dataMatrix[row][col]=' ';
-                        }
-                    }
-            }
-        }
-    }
     public boolean checkUp(int pointX, int pointY){
         int locationRow = (pointY/StaticObject.object_height);
         int locationColumn = pointX/StaticObject.object_width;

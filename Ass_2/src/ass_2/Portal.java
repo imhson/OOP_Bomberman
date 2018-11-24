@@ -13,8 +13,12 @@ import javafx.scene.image.ImageView;
  * @author Hoangson
  */
 public class Portal extends StaticObject{
-    int [] point;
-    ImageView imageView_portal = new ImageView(new Image(getClass().getResourceAsStream("/image_package/wall.png")));
+    static int [] point;
+    ImageView imageView_portal = new ImageView(new Image(getClass().getResourceAsStream("/image_package/portal.png")));
+
+    public Portal() {
+    }
+    
     public Portal(int[] point) {
         super(point);
         this.point=point;

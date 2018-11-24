@@ -20,7 +20,6 @@ public class DynamicObject {
     public DynamicObject(int[] point) {
         this.point = point;
     }
-    
     public boolean check_Up (int pointX,int pointY){
         int locationRow1 = (int) ((pointY-Bomber.SPEED)/StaticObject.object_height);
         int locationColumn1 = (int) ((pointX)/StaticObject.object_width);
@@ -28,7 +27,7 @@ public class DynamicObject {
         int locationRow2 = (int) ((pointY-Bomber.SPEED)/StaticObject.object_height);
         int locationColumn2 = (int) ((pointX+StaticObject.object_width-1)/StaticObject.object_width);
         char tem2 = data.dataMatrix[locationRow2][locationColumn2];
-        if ((tem1=='#'||tem1=='*'||tem1=='b')||(tem2=='#'||tem2=='*'||tem2=='b'))
+        if ((tem1=='#'||tem1=='*'||tem1=='b'||tem1=='x')||(tem2=='#'||tem2=='x'||tem2=='*'||tem2=='b'))
             return false;
         return true;
     }
@@ -39,7 +38,7 @@ public class DynamicObject {
         int locationRow2 = (int) ((pointY+Bomber.SPEED+StaticObject.object_height-1)/StaticObject.object_height);
         int locationColumn2 = (int) ((pointX+StaticObject.object_width-1)/StaticObject.object_width);
         char tem2 = data.dataMatrix[locationRow2][locationColumn2];
-        if ((tem1=='#'||tem1=='*'||tem1=='b')||(tem2=='#'||tem2=='*'||tem2=='b'))
+        if ((tem1=='#'||tem1=='*'||tem1=='b'||tem1=='x')||(tem2=='#'||tem2=='x'||tem2=='*'||tem2=='b'))
             return false;
         return true;
     }
@@ -50,7 +49,7 @@ public class DynamicObject {
         int locationRow2 = (int) ((pointY+StaticObject.object_height-1)/StaticObject.object_height);
         int locationColumn2 = (int) ((pointX-Bomber.SPEED)/StaticObject.object_width);
         char tem2 = data.dataMatrix[locationRow2][locationColumn2];
-        if ((tem1=='#'||tem1=='*'||tem1=='b')||(tem2=='#'||tem2=='*'||tem2=='b'))
+        if ((tem1=='#'||tem1=='*'||tem1=='b'||tem1=='x')||(tem2=='#'||tem2=='x'||tem2=='*'||tem2=='b'))
             return false;
         return true;
     }
@@ -61,7 +60,7 @@ public class DynamicObject {
         int locationRow2 = (int) ((pointY+StaticObject.object_height-1)/StaticObject.object_height);
         int locationColumn2 = (int) ((pointX+Bomber.SPEED+StaticObject.object_width-1)/StaticObject.object_width);
         char tem2 = data.dataMatrix[locationRow2][locationColumn2];
-        if ((tem1=='#'||tem1=='*'||tem1=='b')||(tem2=='#'||tem2=='*'||tem2=='b'))
+        if ((tem1=='#'||tem1=='*'||tem1=='b'||tem1=='x')||(tem2=='#'||tem2=='x'||tem2=='*'||tem2=='b'))
             return false;
         return true;
     }
