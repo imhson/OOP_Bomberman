@@ -5,9 +5,14 @@
  */
 package ass_2;
 
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -39,39 +44,31 @@ public class Ass_2 extends Application {
         Balloom balloom = new Balloom(pointStart_enemyBalloom);
         Oneal oneal = new Oneal(pointStart_enemyOneal);
         
-        EnemyLooper enemyBalloomLooper = new EnemyLooper(balloom);
-        EnemyLooper enemyOnealLooper = new EnemyLooper(oneal);
-        
-        enemyOnealLooper.start();
-        enemyBalloomLooper.start();
         root.getChildren().addAll(bomber.imageView_bomber,balloom.imageView_enemy,oneal.imageView_enemy);
         //dieu khien nhan vat
         primaryScene.setOnKeyPressed(action ->{
+            if (!gameOver){
             if (action.getCode()==KeyCode.UP){
                 if (bomber.check_Up((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()-Bomber.SPEED);
-                    bomber.checkItem(bomber);
                 }
             }
             else{
             if (action.getCode()==KeyCode.LEFT){
                 if (bomber.check_Left((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()-Bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
-                    bomber.checkItem(bomber);
                 }
             }
             else{
             if (action.getCode()==KeyCode.DOWN){
                 if (bomber.check_Down((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX(),(int)bomber.imageView_bomber.getLayoutY()+Bomber.SPEED);
-                    bomber.checkItem(bomber);
                 }
             }
             else{
             if (action.getCode()==KeyCode.RIGHT){
                 if (bomber.check_Right((int)bomber.imageView_bomber.getLayoutX(), (int)bomber.imageView_bomber.getLayoutY())){
                     bomber.movingBomber((int)bomber.imageView_bomber.getLayoutX()+Bomber.SPEED,(int)bomber.imageView_bomber.getLayoutY());
-                    bomber.checkItem(bomber);
                 }
             }
             else{
@@ -105,30 +102,57 @@ public class Ass_2 extends Application {
             }
             }
             }
-        });
+            }
+                });
+        
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if ((int) (bomber.imageView_bomber.getLayoutX())%StaticObject.object_width==0&&(int) (bomber.imageView_bomber.getLayoutY())%StaticObject.object_height==0){
+                    bomber.checkItem(bomber);
+                }
                 if (!gameOver)
-                    gameOver = checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) balloom.imageView_enemy.getLayoutX(), (int) balloom.imageView_enemy.getLayoutY())&&checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) oneal.imageView_enemy.getLayoutX(), (int) oneal.imageView_enemy.getLayoutY());
+                    if (!balloom.isDestroyed)
+                        gameOver = checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) balloom.imageView_enemy.getLayoutX(), (int) balloom.imageView_enemy.getLayoutY());
+                if (!gameOver)
+                    if(!oneal.isDestroyed)
+                        gameOver = checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) oneal.imageView_enemy.getLayoutX(), (int) oneal.imageView_enemy.getLayoutY());
                 if (balloom.isDestroyed){
-                    enemyBalloomLooper.stop();
                     balloom.imageView_enemy.setVisible(false);
                 }
                 if (oneal.isDestroyed){
-                    enemyOnealLooper.stop();
                     oneal.imageView_enemy.setVisible(false);
                 }
                 if (gameOver){
-                    primaryStage.close();
+                    ImageView gameOver = new ImageView(new Image(getClass().getResourceAsStream("/image_package/gameover.png")));
+                    gameOver.setLayoutX(50);
+                    gameOver.setLayoutY(200);
+                    root.getChildren().add(gameOver);
                 }
                 if (balloom.isDestroyed&&oneal.isDestroyed){
-                    if (checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), (int) balloom.imageView_enemy.getLayoutX(), (int) balloom.imageView_enemy.getLayoutY())){
-                        System.out.println("win");
-                        
+                    if (checkContact.checkContact((int) bomber.imageView_bomber.getLayoutX(), (int) bomber.imageView_bomber.getLayoutY(), Portal.point[0],Portal.point[1])){
+                    ImageView win = new ImageView(new Image(getClass().getResourceAsStream("/image_package/win.png")));
+                    win.setLayoutX(50);
+                    win.setLayoutY(150);
+                    root.getChildren().add(win);
                     }
                 }
+                if(!gameOver){
+                if (!balloom.isDestroyed){
+                    balloom.run(balloom);
+                }
+                if (!oneal.isDestroyed){
+                    if (oneal.passed==0){
+                        Random rand = new Random();
+                        oneal.enemy_SPEED = rand.nextInt(4)+1;
+                        if (oneal.enemy_SPEED == 3)
+                            oneal.enemy_SPEED = 2;
+                    }
+                    oneal.run(oneal);
+                }
+                }
             }
+            
         }.start();
 }
 

@@ -11,7 +11,7 @@ package ass_2;
  */
 public class checkContact {
     public static boolean checkContact (int X1, int Y1, int X2, int Y2){
-        if (Math.abs(X2-X1)<StaticObject.object_width&&Math.abs(Y2-Y1)<StaticObject.object_height){
+        if ((Math.abs(X2-X1))<StaticObject.object_width&&(Math.abs(Y2-Y1))<StaticObject.object_height){
             return true;
         }
         else
